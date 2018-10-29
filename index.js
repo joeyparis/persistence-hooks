@@ -91,7 +91,6 @@ function useStateAndSessionStorage(initial, key) {
   return useStateAndPersistence(createSessionStorageMethods, initial, key)
 }
 
-
 function useStateAndCookie(initial, key, options) {
   return useStateAndPersistence(createCookieMethods, initial, key, options)
 }
