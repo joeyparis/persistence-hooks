@@ -7,12 +7,6 @@
 >
 > You'll need to install `react`, `react-dom`, etc at `^16.7.0-alpha.0`
 
-## Install
-
-```sh
-yarn add @rehooks/persistence-hooks
-```
-
 ## Usage
 
 ### Basic Example
