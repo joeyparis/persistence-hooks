@@ -7,11 +7,17 @@
 >
 > You'll need to install `react`, `react-dom`, etc at `^16.7.0-alpha.0`
 
+## Install
+
+```sh
+yarn add @rehooks/persistence-hooks
+```
+
 ## Usage
 
 ### Basic Example
 
-Let's say you want a component to read and store state inside of local storage:
+Let's say you want a component to read from & store state in local storage:
 
 ```jsx
 import { useStateAndLocalStorage } from '@rehooks/persistence-hooks'
