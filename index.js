@@ -3,8 +3,6 @@ const {useState} = require('react')
 
 
 
-
-
 function createStorageMethods(storage, key) {
   return {
 
@@ -61,17 +59,15 @@ function createCookieMethods(key, {days}) {
 
 
 
-
-
 function useStateAndPersistence(createMethods, initial, key, options) {
   const {get, set} = createMethods(key, options)
 
-  const [value, setValue] = useState((() => {
+  const [value, setValue] = useState(() => {
     const persistedValue = get()
     return persistedValue
       ? JSON.parse(persistedValue)
       : initial
-  })())
+  })
 
   return [
     value,
@@ -87,8 +83,6 @@ function useStateAndPersistence(createMethods, initial, key, options) {
 
 
 
-
-
 function useStateAndLocalStorage(initial, key) {
   return useStateAndPersistence(createLocalStorageMethods, initial, key)
 }
@@ -101,8 +95,6 @@ function useStateAndSessionStorage(initial, key) {
 function useStateAndCookie(initial, key, options) {
   return useStateAndPersistence(createCookieMethods, initial, key, options)
 }
-
-
 
 
 
