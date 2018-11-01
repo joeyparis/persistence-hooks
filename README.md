@@ -1,4 +1,4 @@
-# `@rehooks/persistence-hooks`
+# `persistence-hooks`
 
 > React hook for saving & hydrating state from local storage, session storage, or cookies
 
@@ -10,7 +10,7 @@
 ## Install
 
 ```sh
-yarn add @rehooks/persistence-hooks
+yarn add persistence-hooks
 ```
 
 ## Usage
@@ -20,7 +20,7 @@ yarn add @rehooks/persistence-hooks
 Let's say you want a component to read from & store state in local storage:
 
 ```jsx
-import { useStateAndLocalStorage } from '@rehooks/persistence-hooks'
+import { useStateAndLocalStorage } from 'persistence-hooks'
 
 function MyComponent() {
 
@@ -57,7 +57,7 @@ All 3 strategies take in the following arguments:
 In `useStateAndCookie`, a 3rd argument can be passed to specify expiration. Here's the same example above, but using a 10-second cookie:
 
 ```jsx
-import { useStateAndCookie } from '@rehooks/persistence-hooks'
+import { useStateAndCookie } from 'persistence-hooks'
 
 function MyComponent() {
 

@@ -1,9 +1,9 @@
 {
-  "name": "@rehooks/persistence-hooks",
+  "name": "persistence-hooks",
   "version": "1.0.0",
   "description": "React hooks that blur the line between state and persistent data",
   "main": "index.js",
-  "repository": "https://github.com/rehooks/...",
+  "repository": "https://github.com/harrysolovay/persistence-hooks",
   "author": "Harry Solovay <harrysolovay@gmail.com> (harrysolovay.com)",
   "license": "MIT",
   "publishConfig": {

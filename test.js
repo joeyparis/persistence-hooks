@@ -1,20 +1,23 @@
 'use strict';
-let test = require('ava');
-let { createElement: h } = require('react');
-let ReactTestRenderer = require('react-test-renderer');
-let use... = require('./');
 
-function render(val) {
-  return ReactTestRenderer.create(val);
-}
+// TODO: write tests!
 
-test(t => {
-  function Component() {
-    let value = use...();
-    return h('div');
-  }
+// let test = require('ava');
+// let { createElement: h } = require('react');
+// let ReactTestRenderer = require('react-test-renderer');
+// let use... = require('./');
 
-  let input = render(h(Component));
+// function render(val) {
+//   return ReactTestRenderer.create(val);
+// }
 
-  t.is(input.toJSON().props.value, '...');
-});
+// test(t => {
+//   function Component() {
+//     let value = use...();
+//     return h('div');
+//   }
+
+//   let input = render(h(Component));
+
+//   t.is(input.toJSON().props.value, '...');
+// });

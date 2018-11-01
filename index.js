@@ -76,7 +76,8 @@ function useStateAndPersistence(createMethods, initial, key, options) {
         ? updater(value)
         : value
       set(nextValue)
-      setValue(nextValue, callback)
+      setValue(nextValue)
+      callback && callback()
     },
   ]
 }
