@@ -65,7 +65,7 @@ function useStateAndPersistence(createMethods, initial, key, options) {
   const [value, setValue] = useState(() => {
     const persistedValue = get()
     return persistedValue
-      ? JSON.parse(persistedValue)
+      ? persistedValue
       : initial
   })
 
