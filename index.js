@@ -71,10 +71,10 @@ function useStateAndPersistence(createMethods, initial, key, options) {
 
   return [
     value,
-    (updater, callback) => {
-      const nextValue = typeof updater === 'function'
-        ? updater(value)
-        : value
+    (getNextValue, callback) => {
+      const nextValue = typeof getNextValue === 'function'
+        ? getNextValue(value)
+        : getNextValue
       set(nextValue)
       setValue(nextValue)
       callback && callback()
