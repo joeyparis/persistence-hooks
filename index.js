@@ -1,5 +1,5 @@
 'use strict'
-const {useState} = require('react')
+const {useState, useEffect} = require('react')
 
 
 
@@ -96,10 +96,25 @@ function useStateAndCookie(initial, key, options) {
   return useStateAndPersistence(createCookieMethods, initial, key, options)
 }
 
+function useStateAndAsyncStorage(initial, key) {
+  const { AsyncStorage } = require("react-native")
+  const [value, setValue] = useState(initial)
+  useEffect(readItemValue, [])
+  function readItemValue() {
+    AsyncStorage.getItem(key).then(itemValue=>setValue(itemValue))
+  }
+  function writeItemValue(putValue) {
+    AsyncStorage.setItem(key, putValue)
+    setValue(putValue)
+  }
+  return [value, writeItemValue]
+}
+
 
 
 module.exports = {
   useStateAndLocalStorage,
   useStateAndSessionStorage,
   useStateAndCookie,
+  useStateAndAsyncStorage
 }
