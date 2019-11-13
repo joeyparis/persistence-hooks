@@ -27,16 +27,12 @@ function createSessionStorageMethods(key) {
   return createStorageMethods(window.sessionStorage, key)
 }
 
-function createCookieMethods(key, options={}) {
-
-  let { days } = options // deprecated: This is temporary while we still allow options to be passed in the 'useHook' function
-
+function createCookieMethods(key, {days}) {
   return {
 
-    set: (value, options={}) => {
+    set: (value) => {
       const stringified = JSON.stringify(value)
       let expiration = null
-      days = options.days || days // deprecated: This is temporary while we still allow options to be passed in the 'useHook' function
       if (days) {
         const currentDate = new Date()
         const expirationTime = currentDate.getTime() + (days * 24 * 60 * 60 * 1000)
@@ -64,10 +60,6 @@ function createCookieMethods(key, options={}) {
 
 
 function useStateAndPersistence(createMethods, initial, key, options) {
-  if( typeof options !== 'undefined' ) {
-    console.warn("The use of the 'options' argument in the 'useHook' function has been deprecated. Please pass 'options' when using the 'set' function instead.")
-  }
-
   const {get, set} = createMethods(key, options)
 
   const [value, setValue] = useState(() => {
