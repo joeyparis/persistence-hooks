@@ -59,7 +59,9 @@ function createCookieMethods(key, {days}) {
 
 
 
-function useStateAndPersistence(createMethods, initial, key, options) {
+function useStateAndPersistence(createMethods, initial, key, initial_options) {
+  const [options, setOptions] = useState(initial_options)
+
   const {get, set} = createMethods(key, options)
 
   const [value, setValue] = useState(() => {
@@ -79,6 +81,12 @@ function useStateAndPersistence(createMethods, initial, key, options) {
       setValue(nextValue)
       callback && callback()
     },
+    (getNextOptions, callback) => {
+      const nextOptions = typeof getNextOptions === 'function'
+        ? getNextOptions(options)
+        : getNextOptions
+      setOptions(nextOptions)
+    }
   ]
 }
 
