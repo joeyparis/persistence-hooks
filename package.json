@@ -1,6 +1,6 @@
 {
   "name": "persistence-hooks",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "React hooks that blur the line between state and persistent data",
   "main": "index.js",
   "repository": "https://github.com/harrysolovay/persistence-hooks",
