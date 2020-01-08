@@ -1,5 +1,3 @@
-'use strict';
-
 // TODO: write tests!
 
 // let test = require('ava');
