@@ -1,120 +1,89 @@
-'use strict'
-const {useState, useEffect} = require('react')
-
-
+const { useState } = require('react')
 
 function createStorageMethods(storage, key) {
-  return {
+	return {
+		set: (value) => {
+			const stringified = JSON.stringify(value)
+			storage.setItem(key, stringified)
+		},
 
-    set: (value) => {
-      const stringified = JSON.stringify(value)
-      storage.setItem(key, stringified)
-    },
-    
-    get: () => {
-      const stringified = storage.getItem(key)
-      return JSON.parse(stringified)
-    },
-
-  }
+		get: () => {
+			const stringified = storage.getItem(key)
+			return JSON.parse(stringified)
+		},
+	}
 }
 
 function createLocalStorageMethods(key) {
-  return createStorageMethods(window.localStorage, key)
+	return createStorageMethods(window.localStorage, key)
 }
 
 function createSessionStorageMethods(key) {
-  return createStorageMethods(window.sessionStorage, key)
+	return createStorageMethods(window.sessionStorage, key)
 }
 
-function createCookieMethods(key, {days}) {
-  return {
+function createCookieMethods(key, { days }) {
+	return {
+		set: (value) => {
+			const stringified = JSON.stringify(value)
+			let expiration = null
+			if (days) {
+				const currentDate = new Date()
+				const expirationTime = currentDate.getTime() + days * 24 * 60 * 60 * 1000
+				const expirationString = new Date(expirationTime).toUTCString()
+				expiration = `; expires=${expirationString}`
+			} else {
+				expiration = ''
+			}
+			document.cookie = `${key}=${stringified}${expiration}; path=/`
+		},
 
-    set: (value) => {
-      const stringified = JSON.stringify(value)
-      let expiration = null
-      if (days) {
-        const currentDate = new Date()
-        const expirationTime = currentDate.getTime() + (days * 24 * 60 * 60 * 1000)
-        const expirationString = new Date(expirationTime).toUTCString()
-        expiration = `; expires=${ expirationString }`
-      } else {
-        expiration = ''
-      }
-      document.cookie = `${ key }=${ stringified }${ expiration }; path=/`
-    },
-
-    get: () => {
-      const cookies = document.cookie ? document.cookie.split('; ') : []
-      for (let i = 0; i < cookies.length; i++) {
-        const parts = cookies[i].split('=')
-        if (parts[0] === key) {
-          return JSON.parse(parts[1])
-        }
-      }
-    },
-
-  }
+		get: () => {
+			const cookies = document.cookie ? document.cookie.split('; ') : []
+			for (let i = 0; i < cookies.length; i += 1) {
+				const parts = cookies[i].split('=')
+				if (parts[0] === key) {
+					return JSON.parse(parts[1])
+				}
+			}
+			return {}
+		},
+	}
 }
-
-
 
 function useStateAndPersistence(createMethods, initial, key, options) {
-  const {get, set} = createMethods(key, options)
+	const { get, set } = createMethods(key, options)
 
-  const [value, setValue] = useState(() => {
-    const persistedValue = get()
-    return persistedValue
-      ? persistedValue
-      : initial
-  })
+	const [value, setValue] = useState(() => {
+		const persistedValue = get()
+		return persistedValue || initial
+	})
 
-  return [
-    value,
-    (getNextValue, callback) => {
-      const nextValue = typeof getNextValue === 'function'
-        ? getNextValue(value)
-        : getNextValue
-      set(nextValue)
-      setValue(nextValue)
-      callback && callback()
-    },
-  ]
+	return [
+		value,
+		(getNextValue, callback) => {
+			const nextValue = typeof getNextValue === 'function' ? getNextValue(value) : getNextValue
+			set(nextValue)
+			setValue(nextValue)
+			if (callback) callback()
+		},
+	]
 }
 
-
-
 function useStateAndLocalStorage(initial, key) {
-  return useStateAndPersistence(createLocalStorageMethods, initial, key)
+	return useStateAndPersistence(createLocalStorageMethods, initial, key)
 }
 
 function useStateAndSessionStorage(initial, key) {
-  return useStateAndPersistence(createSessionStorageMethods, initial, key)
+	return useStateAndPersistence(createSessionStorageMethods, initial, key)
 }
 
 function useStateAndCookie(initial, key, options) {
-  return useStateAndPersistence(createCookieMethods, initial, key, options)
+	return useStateAndPersistence(createCookieMethods, initial, key, options)
 }
-
-function useStateAndAsyncStorage(initial, key) {
-  const { AsyncStorage } = require("react-native")
-  const [value, setValue] = useState(initial)
-  useEffect(readItemValue, [])
-  function readItemValue() {
-    AsyncStorage.getItem(key).then(itemValue=>setValue(itemValue))
-  }
-  function writeItemValue(putValue) {
-    AsyncStorage.setItem(key, putValue)
-    setValue(putValue)
-  }
-  return [value, writeItemValue]
-}
-
-
 
 module.exports = {
-  useStateAndLocalStorage,
-  useStateAndSessionStorage,
-  useStateAndCookie,
-  useStateAndAsyncStorage
+	useStateAndLocalStorage,
+	useStateAndSessionStorage,
+	useStateAndCookie,
 }
