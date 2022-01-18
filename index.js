@@ -24,13 +24,11 @@ function createSessionStorageMethods(key) {
 
 function createCookieMethods(key, { days }) {
 	return {
-		set: (value) => {
-			const new_value = value?.value || value
-			const expiration_days = value?.days || days
-			const stringified = JSON.stringify(new_value)
+		set: (value, options={}) => {
+			const expiration_days = options.days || days
 			let expiration = null
 
-			if (days) {
+			if (expiration_days) {
 				const currentDate = new Date()
 				const expirationTime = currentDate.getTime() + expiration_days * 24 * 60 * 60 * 1000
 				const expirationString = new Date(expirationTime).toUTCString()
@@ -40,7 +38,7 @@ function createCookieMethods(key, { days }) {
 				expiration = ''
 			}
 
-			document.cookie = `${key}=${stringified}${expiration}; path=/`
+			document.cookie = `${key}=${JSON.stringify(value)}${expiration}; path=/`
 		},
 
 		get: () => {
@@ -62,7 +60,15 @@ function useStateAndPersistence(createMethods, initial = null, key, options) {
 	const [value, setValue] = useState(() => {
 		const persistedValue = get()
 
-		return persistedValue ? persistedValue : initial !== null ? initial : {}
+		if (persistedValue) {
+			return persistedValue
+		}
+
+		if (initial !== null) {
+			return initial
+		}
+
+		return {}
 	})
 
 	return [
