@@ -24,7 +24,7 @@ function createSessionStorageMethods(key) {
 
 function createCookieMethods(key, { days }) {
 	return {
-		set: (value, options={}) => {
+		set: (value, options = {}) => {
 			const expiration_days = options.days || days
 			let expiration = null
 
@@ -73,9 +73,9 @@ function useStateAndPersistence(createMethods, initial = null, key, options) {
 
 	return [
 		value,
-		(getNextValue, callback) => {
+		(getNextValue, callback, options) => {
 			const nextValue = typeof getNextValue === 'function' ? getNextValue(value) : getNextValue
-			set(nextValue)
+			set(nextValue, options)
 			setValue(nextValue)
 			if (callback) callback()
 		},
