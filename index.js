@@ -24,18 +24,21 @@ function createSessionStorageMethods(key) {
 
 function createCookieMethods(key, { days }) {
 	return {
-		set: (value) => {
-			const stringified = JSON.stringify(value)
+		set: (value, options = {}) => {
+			const expiration_days = options.days || days
 			let expiration = null
-			if (days) {
+
+			if (expiration_days) {
 				const currentDate = new Date()
-				const expirationTime = currentDate.getTime() + days * 24 * 60 * 60 * 1000
+				const expirationTime = currentDate.getTime() + expiration_days * 24 * 60 * 60 * 1000
 				const expirationString = new Date(expirationTime).toUTCString()
+
 				expiration = `; expires=${expirationString}`
 			} else {
 				expiration = ''
 			}
-			document.cookie = `${key}=${stringified}${expiration}; path=/`
+
+			document.cookie = `${key}=${JSON.stringify(value)}${expiration}; path=/`
 		},
 
 		get: () => {
@@ -46,24 +49,33 @@ function createCookieMethods(key, { days }) {
 					return JSON.parse(parts[1])
 				}
 			}
-			return {}
+			return null
 		},
 	}
 }
 
-function useStateAndPersistence(createMethods, initial, key, options) {
+function useStateAndPersistence(createMethods, initial = null, key, options) {
 	const { get, set } = createMethods(key, options)
 
 	const [value, setValue] = useState(() => {
 		const persistedValue = get()
-		return persistedValue || initial
+
+		if (persistedValue) {
+			return persistedValue
+		}
+
+		if (initial !== null) {
+			return initial
+		}
+
+		return {}
 	})
 
 	return [
 		value,
-		(getNextValue, callback) => {
+		(getNextValue, callback, options) => {
 			const nextValue = typeof getNextValue === 'function' ? getNextValue(value) : getNextValue
-			set(nextValue)
+			set(nextValue, options)
 			setValue(nextValue)
 			if (callback) callback()
 		},
